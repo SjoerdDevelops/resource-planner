@@ -1,0 +1,2 @@
+class EmployeeModel:
+    pass
