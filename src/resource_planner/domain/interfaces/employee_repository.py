@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
-from resource_planner.domain.employee import Employee
+from resource_planner.domain.entities.employee import Employee
 
 
-class EmployeeDataStore(ABC):
+class EmployeeRepository(ABC):
     @abstractmethod
     def get_by_id(self, id: int) -> Optional[Employee]:
         pass

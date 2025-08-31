@@ -1,10 +1,11 @@
 import pytest
 from peewee import SqliteDatabase
-from resource_planner.persistance.db_employee_data_store import (
-    EmployeeModel,
-    DBEmployeeDataStore,
+from resource_planner.infrastructure.models.employee_model import EmployeeModel
+from resource_planner.infrastructure.repositories.db_employee_repository import (
+    DBEmployeeRepository,
 )
-from resource_planner.domain.employee import (
+
+from resource_planner.domain.entities.employee import (
     Employee,
     PersonalInfo,
     EmploymentDetails,
@@ -38,7 +39,7 @@ def sample_employee() -> Employee:
 
 
 def test_add_employee(setup_db, sample_employee):
-    store = DBEmployeeDataStore()
+    store = DBEmployeeRepository()
     added_employee = store.add(sample_employee)
 
     assert isinstance(added_employee, Employee)
@@ -49,7 +50,7 @@ def test_add_employee(setup_db, sample_employee):
 
 
 def test_get_by_id(setup_db, sample_employee):
-    store = DBEmployeeDataStore()
+    store = DBEmployeeRepository()
     added_employee = store.add(sample_employee)
     employee_id = EmployeeModel.get(EmployeeModel.username == "asmith").id
 
@@ -59,7 +60,7 @@ def test_get_by_id(setup_db, sample_employee):
 
 
 def test_update_employee(setup_db, sample_employee):
-    store = DBEmployeeDataStore()
+    store = DBEmployeeRepository()
     store.add(sample_employee)
 
     updated_employee = Employee(
@@ -73,13 +74,14 @@ def test_update_employee(setup_db, sample_employee):
     fetched_employee = store.get_by_id(
         EmployeeModel.get(EmployeeModel.username == "asmith").id
     )
+    assert fetched_employee is not None
     assert fetched_employee.personal.surname == "Johnson"
     assert fetched_employee.employment.fte == 0.9
     assert fetched_employee.credentials.acronym == "AJ"
 
 
 def test_list_all_employees(setup_db, sample_employee):
-    store = DBEmployeeDataStore()
+    store = DBEmployeeRepository()
     store.add(sample_employee)
 
     employee2 = Employee(

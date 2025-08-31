@@ -24,10 +24,3 @@ class Employee:
     personal: PersonalInfo
     employment: EmploymentDetails
     credentials: CompanyCredentials
-
-
-sjoerd = Employee(
-    PersonalInfo("Sjoerd", "Kuitert"),
-    EmploymentDetails(1.0, 0.8),
-    CompanyCredentials("kuiters", "SKT"),
-)
