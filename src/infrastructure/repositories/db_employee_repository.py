@@ -1,8 +1,8 @@
 from typing import List, Optional
-from resource_planner.domain.entities.employee import Employee
-from resource_planner.domain.interfaces.employee_repository import EmployeeRepository
-from resource_planner.infrastructure.models.employee_model import EmployeeModel
-from resource_planner.infrastructure.schemas.employee_schema import (
+from domain.entities.employee import Employee
+from domain.interfaces.employee_repository import EmployeeRepository
+from infrastructure.models.employee_model import EmployeeModel
+from infrastructure.schemas.employee_schema import (
     create_employee_from_data,
     create_employee_from_schema,
 )

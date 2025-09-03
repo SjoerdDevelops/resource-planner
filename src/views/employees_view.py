@@ -5,9 +5,11 @@ from PySide6.QtWidgets import (
     QTableWidget,
     QTableWidgetItem,
 )
-from persistance.db_employee_data_store import DBEmployeeDataStore
+from infrastructure.repositories.db_employee_repository import (
+    DBEmployeeRepository,
+)
 from typing import List
-from domain.employee import (
+from domain.entities.employee import (
     Employee,
     PersonalInfo,
     EmploymentDetails,
@@ -18,7 +20,7 @@ from domain.employee import (
 class EmployeeTable(QTableWidget):
     def __init__(self):
         super().__init__()
-        self.data_store = DBEmployeeDataStore()
+        self.data_store = DBEmployeeRepository()
         self.data_store.add(
             Employee(
                 PersonalInfo("Sjoerd", "Kuitert"),

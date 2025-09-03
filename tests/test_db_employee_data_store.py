@@ -1,11 +1,11 @@
 import pytest
 from peewee import SqliteDatabase
-from resource_planner.infrastructure.models.employee_model import EmployeeModel
-from resource_planner.infrastructure.repositories.db_employee_repository import (
+from infrastructure.models.employee_model import EmployeeModel
+from infrastructure.repositories.db_employee_repository import (
     DBEmployeeRepository,
 )
 
-from resource_planner.domain.entities.employee import (
+from domain.entities.employee import (
     Employee,
     PersonalInfo,
     EmploymentDetails,

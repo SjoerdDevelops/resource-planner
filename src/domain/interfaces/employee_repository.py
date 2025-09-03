@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
-from resource_planner.domain.entities.employee import Employee
+from domain.entities.employee import Employee
 
 
 class EmployeeRepository(ABC):

@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict, ValidationError
 from typing import Any, Optional
-from resource_planner.domain.entities.employee import (
+from domain.entities.employee import (
     Employee,
     PersonalInfo,
     EmploymentDetails,
