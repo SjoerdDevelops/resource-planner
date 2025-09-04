@@ -1,6 +1,8 @@
 from typing import Tuple, Callable, Any, List
 from PySide6.QtWidgets import QTableWidget, QTableWidgetItem
 from domain.entities import Employee
+from application.services import EmployeeService
+from infrastructure.repositories import DBEmployeeRepository
 
 # Column = (header label, extractor function)
 Column = Tuple[str, Callable[[Employee], Any]]
@@ -9,23 +11,11 @@ Column = Tuple[str, Callable[[Employee], Any]]
 class EmployeeTable(QTableWidget):
     def __init__(self):
         super().__init__()
-        self.employees = []
-        # self.repository = DBEmployeeRepository()
-        #
-        # self.repository.add(
-        #     Employee(
-        #         PersonalInfo("Sjoerd", "Kuitert"),
-        #         EmploymentDetails(1.0, 0.8),
-        #         CompanyCredentials("kuiters", "SKT"),
-        #     )
-        # )
-        # self.repository.add(
-        #     Employee(
-        #         PersonalInfo("Jasper", "Schol"),
-        #         EmploymentDetails(1.0, 0.9),
-        #         CompanyCredentials("scholj", "JSL"),
-        #     )
-        # )
+
+        repository = DBEmployeeRepository()
+        service = EmployeeService(repository)
+
+        self.employees = service.list_all()
 
         self.columns: List[Column] = [
             ("Name", lambda employee: employee.personal.name),
@@ -38,6 +28,7 @@ class EmployeeTable(QTableWidget):
 
         self.setColumnCount(len(self.columns))
         self.setHorizontalHeaderLabels([label for (label, _) in self.columns])
+        self.update_table(self.employees)
 
     def update_table(self, employees: List[Employee]):
         self.employees = employees

@@ -21,6 +21,11 @@ class CompanyCredentials:
 
 @dataclass
 class Employee:
+    id: int
     personal: PersonalInfo
     employment: EmploymentDetails
     credentials: CompanyCredentials
+
+    @property
+    def utilization_percentage(self):
+        return self.employment.utilization_rate * 100

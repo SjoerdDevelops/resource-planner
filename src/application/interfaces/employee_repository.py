@@ -1,21 +1,39 @@
 from abc import ABC, abstractmethod
-from typing import List, Optional
-from domain.entities import Employee
+from typing import List, Any
+from domain.schemas import (
+    EmployeeSchema,
+    PersonalInfoSchema,
+    EmploymentDetailsSchema,
+    CompanyCredentialsSchema,
+)
 
 
 class EmployeeRepository(ABC):
     @abstractmethod
-    def get_by_id(self, id: int) -> Optional[Employee]:
+    def get_by_id(self, id: int) -> Any:
         pass
 
     @abstractmethod
-    def add(self, employee: Employee) -> Employee:
+    def get_by_username(self, username: str) -> Any:
         pass
 
     @abstractmethod
-    def update(self, username: str, employee: Employee) -> int:
+    def add(
+        self,
+        personal: PersonalInfoSchema,
+        employment: EmploymentDetailsSchema,
+        credentials: CompanyCredentialsSchema,
+    ) -> Any:
         pass
 
     @abstractmethod
-    def list_all(self) -> List[Employee]:
+    def delete(self, id: int):
+        pass
+
+    @abstractmethod
+    def update(self, employee: EmployeeSchema) -> Any:
+        pass
+
+    @abstractmethod
+    def list_all(self) -> List[Any]:
         pass
