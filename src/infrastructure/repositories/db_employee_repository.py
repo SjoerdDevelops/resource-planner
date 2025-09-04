@@ -2,7 +2,7 @@ from typing import List, Optional
 from domain.entities import Employee
 from domain.interfaces import EmployeeRepository
 from infrastructure.models import EmployeeModel
-from infrastructure.schemas import (
+from domain.schemas import (
     create_employee_from_data,
     create_employee_from_schema,
 )
