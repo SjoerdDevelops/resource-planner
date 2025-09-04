@@ -8,37 +8,31 @@ from PySide6.QtWidgets import (
 from infrastructure.repositories import (
     DBEmployeeRepository,
 )
-from typing import List
+from typing import List, Any, Callable, Tuple
 from domain.entities import (
     Employee,
     PersonalInfo,
     EmploymentDetails,
     CompanyCredentials,
 )
-from enum import IntEnum
 
-
-class EmployeeColumns(IntEnum):
-    NAME = 0
-    SURNAME = 1
-    USERNAME = 2
-    ACRONYM = 3
-    FTE = 4
-    UTILIZATION_RATE = 5
+# Column = (header label, extractor function)
+Column = Tuple[str, Callable[[Employee], Any]]
 
 
 class EmployeeTable(QTableWidget):
     def __init__(self):
         super().__init__()
-        self.data_store = DBEmployeeRepository()
-        self.data_store.add(
+        self.repository = DBEmployeeRepository()
+
+        self.repository.add(
             Employee(
                 PersonalInfo("Sjoerd", "Kuitert"),
                 EmploymentDetails(1.0, 0.8),
                 CompanyCredentials("kuiters", "SKT"),
             )
         )
-        self.data_store.add(
+        self.repository.add(
             Employee(
                 PersonalInfo("Jasper", "Schol"),
                 EmploymentDetails(1.0, 0.9),
@@ -46,31 +40,27 @@ class EmployeeTable(QTableWidget):
             )
         )
 
-        headers: List[str] = [
-            "Name",
-            "Surname",
-            "Username",
-            "Acronym",
-            "FTE",
-            "Utilization Rate",
+        self.columns: List[Column] = [
+            ("Name", lambda employee: employee.personal.name),
+            ("Surname", lambda employee: employee.personal.surname),
+            ("Username", lambda employee: employee.credentials.username),
+            ("Acronym", lambda employee: employee.credentials.acronym),
+            ("FTE", lambda employee: employee.employment.fte),
+            ("Utilization Rate", lambda employee: employee.employment.utilization_rate),
         ]
-        self.setColumnCount(len(headers))
+
+        self.setColumnCount(len(self.columns))
+        self.setHorizontalHeaderLabels([label for (label, _) in self.columns])
         self.update_table()
 
     def update_table(self):
-        employees: List[Employee] = self.data_store.list_all()
+        employees: List[Employee] = self.repository.list_all()
         self.setRowCount(len(employees))
 
-        # TODO: Fix magic numbers
         for row, employee in enumerate(employees):
-            self.setItem(row, 0, QTableWidgetItem(str(employee.personal.name)))
-            self.setItem(row, 1, QTableWidgetItem(str(employee.personal.surname)))
-            self.setItem(row, 2, QTableWidgetItem(str(employee.credentials.username)))
-            self.setItem(row, 3, QTableWidgetItem(str(employee.credentials.acronym)))
-            self.setItem(row, 4, QTableWidgetItem(str(employee.employment.fte)))
-            self.setItem(
-                row, 5, QTableWidgetItem(str(employee.employment.utilization_rate))
-            )
+            for col, (_, extractor) in enumerate(self.columns):
+                value: Any = extractor(employee)
+                self.setItem(row, col, QTableWidgetItem(str(value)))
 
 
 class EmployeesView(QWidget):
