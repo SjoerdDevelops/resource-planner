@@ -22,18 +22,18 @@ class EmployeeSchema(BaseModel):
 
 def validate_employee(data: Any) -> Optional[EmployeeSchema]:
     try:
-        employeeDTO: EmployeeSchema = EmployeeSchema.model_validate(data)
-        return employeeDTO
+        employee_schema: EmployeeSchema = EmployeeSchema.model_validate(data)
+        return employee_schema
     except ValidationError as e:
         print("Validation failed:", e.json())
         return None
 
 
-def create_employee_from_schema(employeeDTO: EmployeeSchema) -> Employee:
+def create_employee_from_schema(employee_schema: EmployeeSchema) -> Employee:
     return Employee(
-        PersonalInfo(employeeDTO.name, employeeDTO.surname),
-        EmploymentDetails(employeeDTO.fte, employeeDTO.utilization_rate),
-        CompanyCredentials(employeeDTO.username, employeeDTO.acronym),
+        PersonalInfo(employee_schema.name, employee_schema.surname),
+        EmploymentDetails(employee_schema.fte, employee_schema.utilization_rate),
+        CompanyCredentials(employee_schema.username, employee_schema.acronym),
     )
 
 
