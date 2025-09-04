@@ -5,16 +5,26 @@ from PySide6.QtWidgets import (
     QTableWidget,
     QTableWidgetItem,
 )
-from infrastructure.repositories.db_employee_repository import (
+from infrastructure.repositories import (
     DBEmployeeRepository,
 )
 from typing import List
-from domain.entities.employee import (
+from domain.entities import (
     Employee,
     PersonalInfo,
     EmploymentDetails,
     CompanyCredentials,
 )
+from enum import IntEnum
+
+
+class EmployeeColumns(IntEnum):
+    NAME = 0
+    SURNAME = 1
+    USERNAME = 2
+    ACRONYM = 3
+    FTE = 4
+    UTILIZATION_RATE = 5
 
 
 class EmployeeTable(QTableWidget):

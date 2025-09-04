@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
-from domain.entities.employee import Employee
+from domain.entities import Employee
 
 
 class EmployeeRepository(ABC):

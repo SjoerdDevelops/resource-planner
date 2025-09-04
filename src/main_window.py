@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QMainWindow, QTabWidget
-from views.dashboard_view import DashboardView
-from views.employees_view import EmployeesView
+from views import DashboardView
+from views import EmployeesView
 
 
 class MainWindow(QMainWindow):

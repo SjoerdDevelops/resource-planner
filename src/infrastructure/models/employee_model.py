@@ -1,6 +1,4 @@
-from peewee import SqliteDatabase, Model, IntegerField, DoubleField, CharField
-
-db = SqliteDatabase("database.db")
+from peewee import Model, IntegerField, DoubleField, CharField
 
 
 # TODO: Enforce acceptable values for the database entries
@@ -13,9 +11,3 @@ class EmployeeModel(Model):
     utilization_rate = DoubleField()
     username = CharField(unique=True)
     acronym = CharField(unique=True)
-
-    class Meta:
-        database = db
-
-
-db.create_tables([EmployeeModel])
