@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from uuid import UUID, uuid4
 
 
 @dataclass
@@ -21,7 +22,7 @@ class CompanyCredentials:
 
 @dataclass
 class Employee:
-    id: int
+    id: UUID
     personal: PersonalInfo
     employment: EmploymentDetails
     credentials: CompanyCredentials

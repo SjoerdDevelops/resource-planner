@@ -1,4 +1,4 @@
-from .employee_flat_data_schema import EmployeeFlatDataSchema
+from .employee_model_schema import EmployeeModelSchema
 from .employee_schema import (
     EmployeeSchema,
     PersonalInfoSchema,

@@ -1,4 +1,5 @@
-from typing import Optional, Any, List
+from uuid import uuid4, UUID
+from typing import Optional
 from application.interfaces import EmployeeRepository
 from domain.entities import (
     Employee,
@@ -6,62 +7,45 @@ from domain.entities import (
     EmploymentDetails,
     CompanyCredentials,
 )
-from domain.schemas import (
-    EmployeeFlatDataSchema,
-    PersonalInfoSchema,
-    EmploymentDetailsSchema,
-    CompanyCredentialsSchema,
-)
-
-
-def create_employee(employee: EmployeeFlatDataSchema) -> Employee:
-    return Employee(
-        employee.id,
-        PersonalInfo(employee.name, employee.surname),
-        EmploymentDetails(employee.fte, employee.utilization_rate),
-        CompanyCredentials(employee.username, employee.acronym),
-    )
 
 
 class EmployeeService:
     def __init__(self, repository: EmployeeRepository):
-        self.repository = repository
+        self._repository = repository
+        self._employees = self.list_all()
 
-    # TODO: Try to add, if it fails, catch the error
-    def add_employee(
+    def add(
         self,
         personal: PersonalInfo,
         employment: EmploymentDetails,
         credentials: CompanyCredentials,
-    ) -> Optional[Employee]:
-        existing: Optional[dict[str, Any]] = self.repository.get_by_username(
-            credentials.username
-        )
+    ) -> Employee:
+        for employee in self._employees:
+            if self.find_by_username(credentials.username):
+                raise ValueError(
+                    f"An employee with username {credentials.username} already exists"
+                )
 
-        if existing:
-            raise ValueError(
-                f"There is already a user with username {credentials.username}."
-            )
+            if self.find_by_acronym(credentials.acronym):
+                raise ValueError(
+                    f"An employee with acronym {credentials.acronym} already exists"
+                )
 
-        result: Any = self.repository.add(
-            PersonalInfoSchema(**personal.__dict__),
-            EmploymentDetailsSchema(**employment.__dict__),
-            CompanyCredentialsSchema(**credentials.__dict__),
-        )
+        employee = Employee(uuid4(), personal, employment, credentials)
+        self._repository.add(employee)
+        return employee
 
-        employee = EmployeeFlatDataSchema.model_validate(result)
+    def remove(self, id: UUID):
+        self._repository.remove(id)
 
-        return create_employee(employee)
+    def find_by_id(self, id: UUID) -> Optional[Employee]:
+        return self._repository.find_by_id(id)
 
-    # TODO: Perhaps this should be done using the userid
-    def delete_employee(self, id: int):
-        self.repository.delete(id)
+    def find_by_username(self, username: str) -> Optional[Employee]:
+        return self._repository.find_by_username(username)
 
-    def list_all(self) -> List[Employee]:
-        result_list: List[Any] = self.repository.list_all()
+    def find_by_acronym(self, acronym: str) -> Optional[Employee]:
+        return self._repository.find_by_acronym(acronym)
 
-        employees = [
-            EmployeeFlatDataSchema.model_validate(result) for result in result_list
-        ]
-
-        return [create_employee(employee) for employee in employees]
+    def list_all(self) -> list[Employee]:
+        return self._repository.list_all()

@@ -1,10 +1,10 @@
-from peewee import Model, IntegerField, DoubleField, CharField
+from peewee import Model, UUIDField, DoubleField, CharField
 
 
 # TODO: Enforce acceptable values for the database entries
 # TODO: Split the database model into seperate models
 class EmployeeModel(Model):
-    id = IntegerField(primary_key=True)
+    id = UUIDField(primary_key=True)
     name = CharField()
     surname = CharField()
     fte = DoubleField()

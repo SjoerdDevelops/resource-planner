@@ -1,8 +1,9 @@
 from pydantic import BaseModel, ConfigDict
+from uuid import UUID
 
 
-class EmployeeFlatDataSchema(BaseModel):
-    id: int
+class EmployeeModelSchema(BaseModel):
+    id: UUID
     name: str
     surname: str
     fte: float

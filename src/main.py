@@ -5,6 +5,7 @@ from infrastructure import db
 from application.services import EmployeeService
 from infrastructure.repositories import DBEmployeeRepository
 from domain.entities import PersonalInfo, EmploymentDetails, CompanyCredentials
+from ui.controllers import EmployeeController
 
 
 def main():
@@ -12,17 +13,18 @@ def main():
     repository = DBEmployeeRepository()
     service = EmployeeService(repository)
 
-    service.add_employee(
+    service.add(
         PersonalInfo("Sjoerd", "Kuitert"),
         EmploymentDetails(1.0, 0.8),
         CompanyCredentials("kuiters", "SKT"),
     )
-    service.add_employee(
+    service.add(
         PersonalInfo("Jasper", "Schol"),
         EmploymentDetails(1.0, 0.9),
         CompanyCredentials("scholj", "JSL"),
     )
 
+    controller = EmployeeController(service)
     app = QApplication(sys.argv)
     window = MainWindow()
 

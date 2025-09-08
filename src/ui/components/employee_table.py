@@ -1,21 +1,18 @@
 from typing import Tuple, Callable, Any, List
 from PySide6.QtWidgets import QTableWidget, QTableWidgetItem
-from domain.entities import Employee
-from application.services import EmployeeService
-from infrastructure.repositories import DBEmployeeRepository
+from ui.dto import EmployeeDTO
+from ui.contexts import employee_context
 
 # Column = (header label, extractor function)
-Column = Tuple[str, Callable[[Employee], Any]]
+Column = Tuple[str, Callable[[EmployeeDTO], Any]]
 
 
 class EmployeeTable(QTableWidget):
     def __init__(self):
         super().__init__()
 
-        repository = DBEmployeeRepository()
-        service = EmployeeService(repository)
-
-        self.employees = service.list_all()
+        employees = employee_context.list_all()
+        employee_context.data_changed.connect(self.on_data_changed)
 
         self.columns: List[Column] = [
             ("Name", lambda employee: employee.personal.name),
@@ -28,13 +25,16 @@ class EmployeeTable(QTableWidget):
 
         self.setColumnCount(len(self.columns))
         self.setHorizontalHeaderLabels([label for (label, _) in self.columns])
-        self.update_table(self.employees)
+        self.update_table(employees)
 
-    def update_table(self, employees: List[Employee]):
-        self.employees = employees
-        self.setRowCount(len(self.employees))
+    def on_data_changed(self):
+        employees = employee_context.list_all()
+        self.update_table(employees)
 
-        for row, employee in enumerate(self.employees):
+    def update_table(self, employees: list[EmployeeDTO]):
+        self.setRowCount(len(employees))
+
+        for row, employee in enumerate(employees):
             for col, (_, extractor) in enumerate(self.columns):
                 value: Any = extractor(employee)
                 self.setItem(row, col, QTableWidgetItem(str(value)))

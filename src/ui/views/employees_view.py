@@ -1,12 +1,12 @@
 from PySide6.QtWidgets import (
+    QDialog,
     QMessageBox,
     QWidget,
     QVBoxLayout,
     QHBoxLayout,
-    QLabel,
     QPushButton,
 )
-from ui.components import EmployeeTable
+from ui.components import EmployeeTable, NewEmployeeForm
 
 
 class EmployeesView(QWidget):
@@ -15,7 +15,6 @@ class EmployeesView(QWidget):
 
         # Table layout
         self.table_layout = QVBoxLayout()
-        self.table_layout.addWidget(QLabel("Employees view"))
 
         self.employee_table = EmployeeTable()
         self.table_layout.addWidget(self.employee_table)
@@ -44,7 +43,10 @@ class EmployeesView(QWidget):
         self.save_button.clicked.connect(self.on_save_clicked)
 
     def on_add_clicked(self):
-        pass
+        dialog = NewEmployeeForm()
+
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            self.table_layout.update()
 
     def on_delete_clicked(self):
         row = self.employee_table.currentRow()

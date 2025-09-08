@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from uuid import UUID
 
 
 class PersonalInfoSchema(BaseModel):
@@ -17,7 +18,7 @@ class CompanyCredentialsSchema(BaseModel):
 
 
 class EmployeeSchema(BaseModel):
-    id: int
+    id: UUID
     personal: PersonalInfoSchema
     employment: EmploymentDetailsSchema
     credentials: CompanyCredentialsSchema
