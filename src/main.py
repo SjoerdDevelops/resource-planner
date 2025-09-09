@@ -13,18 +13,18 @@ def main():
     repository = DBEmployeeRepository()
     service = EmployeeService(repository)
 
-    service.add(
+    _ = service.add(
         PersonalInfo("Sjoerd", "Kuitert"),
         EmploymentDetails(1.0, 0.8),
         CompanyCredentials("kuiters", "SKT"),
     )
-    service.add(
+    _ = service.add(
         PersonalInfo("Jasper", "Schol"),
         EmploymentDetails(1.0, 0.9),
         CompanyCredentials("scholj", "JSL"),
     )
 
-    controller = EmployeeController(service)
+    _ = EmployeeController(service)
     app = QApplication(sys.argv)
     window = MainWindow()
 

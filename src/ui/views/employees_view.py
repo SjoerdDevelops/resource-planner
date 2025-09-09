@@ -10,21 +10,21 @@ from ui.components import EmployeeTable, NewEmployeeForm
 
 
 class EmployeesView(QWidget):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         # Table layout
-        self.table_layout = QVBoxLayout()
+        self.table_layout: QVBoxLayout = QVBoxLayout()
 
-        self.employee_table = EmployeeTable()
+        self.employee_table: EmployeeTable = EmployeeTable()
         self.table_layout.addWidget(self.employee_table)
 
         # Button layout
-        self.button_layout = QVBoxLayout()
+        self.button_layout: QVBoxLayout = QVBoxLayout()
 
-        self.add_button = QPushButton("Add")
-        self.delete_button = QPushButton("Delete")
-        self.save_button = QPushButton("Save")
+        self.add_button: QPushButton = QPushButton("Add")
+        self.delete_button: QPushButton = QPushButton("Delete")
+        self.save_button: QPushButton = QPushButton("Save")
 
         self.button_layout.addWidget(self.add_button)
         self.button_layout.addWidget(self.delete_button)
@@ -38,24 +38,24 @@ class EmployeesView(QWidget):
         self.setLayout(main_layout)
 
         # Callbacks
-        self.add_button.clicked.connect(self.on_add_clicked)
-        self.delete_button.clicked.connect(self.on_delete_clicked)
-        self.save_button.clicked.connect(self.on_save_clicked)
+        _ = self.add_button.clicked.connect(self.on_add_clicked)
+        _ = self.delete_button.clicked.connect(self.on_delete_clicked)
+        _ = self.save_button.clicked.connect(self.on_save_clicked)
 
-    def on_add_clicked(self):
+    def on_add_clicked(self) -> None:
         dialog = NewEmployeeForm()
 
         if dialog.exec() == QDialog.DialogCode.Accepted:
             self.table_layout.update()
 
-    def on_delete_clicked(self):
+    def on_delete_clicked(self) -> None:
         row = self.employee_table.currentRow()
 
         if row >= 0:
             self.employee_table.removeRow(row)
         else:
-            QMessageBox.critical(self, "Delete error", "No row selected to delete.")
+            _ = QMessageBox.critical(self, "Delete error", "No row selected to delete.")
             return
 
-    def on_save_clicked(self):
+    def on_save_clicked(self) -> None:
         pass

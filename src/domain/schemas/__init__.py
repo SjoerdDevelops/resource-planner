@@ -5,3 +5,11 @@ from .employee_schema import (
     EmploymentDetailsSchema,
     CompanyCredentialsSchema,
 )
+
+__all__ = [
+    "EmployeeModelSchema",
+    "EmployeeSchema",
+    "PersonalInfoSchema",
+    "EmploymentDetailsSchema",
+    "CompanyCredentialsSchema",
+]

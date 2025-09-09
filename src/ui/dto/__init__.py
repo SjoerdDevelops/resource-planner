@@ -4,3 +4,10 @@ from .employee import (
     EmploymentDetailsDTO,
     CompanyCredentialsDTO,
 )
+
+__all__ = [
+    "EmployeeDTO",
+    "PersonalInfoDTO",
+    "EmploymentDetailsDTO",
+    "CompanyCredentialsDTO",
+]

@@ -1,30 +1,29 @@
 from application.interfaces import EmployeeRepository
 from domain.entities import Employee
-from typing import Optional
 from uuid import UUID
 
 
 class InMemoryEmployeeRepository(EmployeeRepository):
-    def __init__(self):
+    def __init__(self) -> None:
         self._employees: list[Employee] = []
 
-    def find_by_id(self, id: UUID) -> Optional[Employee]:
+    def find_by_id(self, id: UUID) -> Employee | None:
         return next((e for e in self._employees if e.id == id), None)
 
-    def find_by_username(self, username: str) -> Optional[Employee]:
+    def find_by_username(self, username: str) -> Employee | None:
         return next(
             (e for e in self._employees if e.credentials.username == username), None
         )
 
-    def find_by_acronym(self, acronym: str) -> Optional[Employee]:
+    def find_by_acronym(self, acronym: str) -> Employee | None:
         return next(
             (e for e in self._employees if e.credentials.acronym == acronym), None
         )
 
-    def add(self, employee: Employee) -> Optional[Employee]:
+    def add(self, employee: Employee) -> Employee | None:
         self._employees.append(employee)
 
-    def remove(self, id: UUID):
+    def remove(self, id: UUID) -> None:
         employee = next(
             (employee for employee in self._employees if employee.id == id), None
         )
@@ -33,7 +32,7 @@ class InMemoryEmployeeRepository(EmployeeRepository):
         else:
             raise ValueError(f"Cannot remove employee with id {id}")
 
-    def update(self, employee: Employee):
+    def update(self, employee: Employee) -> None:
         for index, existing in enumerate(self._employees):
             if existing.id == employee.id:
                 self._employees[index] = employee
@@ -44,9 +43,9 @@ class InMemoryEmployeeRepository(EmployeeRepository):
         # Return a copy to prevent outside mutations
         return list(self._employees)
 
-    def clear(self):
+    def clear(self) -> None:
         self._employees = []
 
-    def reset(self, employees: list[Employee]):
+    def reset(self, employees: list[Employee]) -> None:
         # Store a copy to prevent outside mutations
         self._employees = list(employees)

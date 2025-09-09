@@ -9,12 +9,12 @@ class Environment(str, Enum):
     PROD = "database.db"
 
 
-def create_db(environment: Environment):
+def create_db(environment: Environment) -> SqliteDatabase:
     return SqliteDatabase(environment)
 
 
-def init_db():
+def init_db() -> None:
     db = create_db(Environment.DEV)
     db.bind([EmployeeModel])
-    db.connect()
+    _ = db.connect()
     db.create_tables([EmployeeModel])

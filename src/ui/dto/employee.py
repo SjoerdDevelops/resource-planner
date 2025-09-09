@@ -12,7 +12,7 @@ class PersonalInfoDTO(BaseModel):
 
     @field_validator("name", "surname")
     def validate_and_normalize_name(cls, value: str, info: "ValidatorInfo") -> str:
-        value.strip().title()
+        _ = value.strip().title()
 
         field_name = info.field_name.capitalize()
 
@@ -48,7 +48,7 @@ class CompanyCredentialsDTO(BaseModel):
 
     @field_validator("username")
     def validate_and_normalize_username(cls, value: str, info: "ValidatorInfo") -> str:
-        value.strip().lower()
+        _ = value.strip().lower()
 
         field_name = info.field_name.capitalize()
         min_length = 3
@@ -71,7 +71,7 @@ class CompanyCredentialsDTO(BaseModel):
     # Normalize acronym to upper case
     @field_validator("acronym")
     def validate_and_normalize_acronym(cls, value: str, info: "ValidatorInfo") -> str:
-        value.strip().upper()
+        _ = value.strip().upper()
 
         field_name = info.field_name.capitalize()
         acronym_length = 3

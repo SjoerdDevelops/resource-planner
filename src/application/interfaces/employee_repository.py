@@ -1,32 +1,31 @@
 from abc import ABC, abstractmethod
-from typing import Optional
 from domain.entities import Employee
 from uuid import UUID
 
 
 class EmployeeRepository(ABC):
     @abstractmethod
-    def find_by_id(self, id: UUID) -> Optional[Employee]:
+    def find_by_id(self, id: UUID) -> Employee | None:
         pass
 
     @abstractmethod
-    def find_by_username(self, username: str) -> Optional[Employee]:
+    def find_by_username(self, username: str) -> Employee | None:
         pass
 
     @abstractmethod
-    def find_by_acronym(self, acronym: str) -> Optional[Employee]:
+    def find_by_acronym(self, acronym: str) -> Employee | None:
         pass
 
     @abstractmethod
-    def add(self, employee: Employee) -> Optional[Employee]:
+    def add(self, employee: Employee) -> Employee | None:
         pass
 
     @abstractmethod
-    def remove(self, id: UUID):
+    def remove(self, id: UUID) -> None:
         pass
 
     @abstractmethod
-    def update(self, employee: Employee) -> Optional[Employee]:
+    def update(self, employee: Employee) -> Employee | None:
         pass
 
     @abstractmethod

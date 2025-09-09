@@ -1,20 +1,20 @@
-from typing import Tuple, Callable, Any, List
+from typing import Callable, TypeAlias
 from PySide6.QtWidgets import QTableWidget, QTableWidgetItem
 from ui.dto import EmployeeDTO
 from ui.contexts import employee_context
 
 # Column = (header label, extractor function)
-Column = Tuple[str, Callable[[EmployeeDTO], Any]]
+Column: TypeAlias = tuple[str, Callable[[EmployeeDTO], str | float]]
 
 
 class EmployeeTable(QTableWidget):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         employees = employee_context.list_all()
-        employee_context.data_changed.connect(self.on_data_changed)
+        _ = employee_context.data_changed.connect(self.on_data_changed)
 
-        self.columns: List[Column] = [
+        self.columns: list[Column] = [
             ("Name", lambda employee: employee.personal.name),
             ("Surname", lambda employee: employee.personal.surname),
             ("Username", lambda employee: employee.credentials.username),
@@ -27,14 +27,14 @@ class EmployeeTable(QTableWidget):
         self.setHorizontalHeaderLabels([label for (label, _) in self.columns])
         self.update_table(employees)
 
-    def on_data_changed(self):
+    def on_data_changed(self) -> None:
         employees = employee_context.list_all()
         self.update_table(employees)
 
-    def update_table(self, employees: list[EmployeeDTO]):
+    def update_table(self, employees: list[EmployeeDTO]) -> None:
         self.setRowCount(len(employees))
 
         for row, employee in enumerate(employees):
             for col, (_, extractor) in enumerate(self.columns):
-                value: Any = extractor(employee)
+                value = extractor(employee)
                 self.setItem(row, col, QTableWidgetItem(str(value)))

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from uuid import UUID, uuid4
+from uuid import UUID
 
 
 @dataclass
@@ -28,5 +28,5 @@ class Employee:
     credentials: CompanyCredentials
 
     @property
-    def utilization_percentage(self):
+    def utilization_percentage(self) -> float:
         return self.employment.utilization_rate * 100

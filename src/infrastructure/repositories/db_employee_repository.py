@@ -1,4 +1,4 @@
-from typing import Optional, Any
+from typing import Any
 from application.interfaces import EmployeeRepository
 from infrastructure.models import EmployeeModel
 from domain.schemas import EmployeeModelSchema
@@ -13,19 +13,19 @@ from uuid import UUID
 
 # TODO: Add @override method from typing when using python >3.12
 class DBEmployeeRepository(EmployeeRepository):
-    def find_by_id(self, id: UUID) -> Optional[Employee]:
+    def find_by_id(self, id: UUID) -> Employee | None:
         result = EmployeeModel.get_or_none(EmployeeModel.id == id)
         return validate_or_none(result)
 
-    def find_by_username(self, username: str) -> Optional[Employee]:
+    def find_by_username(self, username: str) -> Employee | None:
         result = EmployeeModel.get_or_none(EmployeeModel.username == username)
         return validate_or_none(result)
 
-    def find_by_acronym(self, acronym: str) -> Optional[Employee]:
+    def find_by_acronym(self, acronym: str) -> Employee | None:
         result = EmployeeModel.get_or_none(EmployeeModel.acronym == acronym)
         return validate_or_none(result)
 
-    def add(self, employee: Employee) -> Optional[Employee]:
+    def add(self, employee: Employee) -> Employee | None:
         result = EmployeeModel.create(
             id=employee.id,
             name=employee.personal.name,
@@ -37,10 +37,10 @@ class DBEmployeeRepository(EmployeeRepository):
         )
         return validate_or_none(result)
 
-    def remove(self, id: UUID):
+    def remove(self, id: UUID) -> None:
         EmployeeModel.delete_by_id(id)
 
-    def update(self, employee: Employee) -> Optional[Employee]:
+    def update(self, employee: Employee) -> Employee | None:
         EmployeeModel.update(
             name=employee.personal.name,
             surname=employee.personal.surname,
@@ -69,7 +69,7 @@ def to_employee(model: EmployeeModelSchema) -> Employee:
     )
 
 
-def validate_or_none(data: Any) -> Optional[Employee]:
+def validate_or_none(data: object) -> Employee | None:
     if data:
         employee_schema = EmployeeModelSchema.model_validate(data)
         return to_employee(employee_schema)

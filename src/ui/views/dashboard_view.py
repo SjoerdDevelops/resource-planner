@@ -1,9 +1,8 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel
-from ui.components import NewEmployeeForm
+from PySide6.QtWidgets import QWidget, QVBoxLayout
 
 
 class DashboardView(QWidget):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         layout = QVBoxLayout()
 

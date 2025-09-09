@@ -16,12 +16,14 @@ from uuid import UUID
 
 
 class EmployeeController:
-    def __init__(self, employee_service: EmployeeService):
-        self._employee_service = employee_service
+    def __init__(self, employee_service: EmployeeService) -> None:
+        self._employee_service: EmployeeService = employee_service
         self.update_context()
 
-        employee_context.add_employee_requested.connect(self.on_add_employee_requested)
-        employee_context.remove_employee_requested.connect(
+        _ = employee_context.add_employee_requested.connect(
+            self.on_add_employee_requested
+        )
+        _ = employee_context.remove_employee_requested.connect(
             self.on_remove_employee_requested
         )
 
@@ -30,9 +32,9 @@ class EmployeeController:
         personal_dto: PersonalInfoDTO,
         employment_dto: EmploymentDetailsDTO,
         credentials_dto: CompanyCredentialsDTO,
-    ):
+    ) -> None:
         try:
-            employee = self._employee_service.add(
+            employee: Employee = self._employee_service.add(
                 to_personal_info(personal_dto),
                 to_employment_details(employment_dto),
                 to_company_credentials(credentials_dto),
@@ -42,14 +44,14 @@ class EmployeeController:
         except Exception as e:
             employee_context.error_occured.emit(e)
 
-    def on_remove_employee_requested(self, id: UUID):
+    def on_remove_employee_requested(self, id: UUID) -> None:
         try:
             self._employee_service.remove(id)
             employee_context.remove_employee(id)
         except Exception as e:
             employee_context.error_occured.emit(e)
 
-    def update_context(self):
+    def update_context(self) -> None:
         employees = self._employee_service.list_all()
         employees_dto = [to_employee_dto(employee) for employee in employees]
         employee_context.reset(employees_dto)
@@ -77,23 +79,27 @@ def to_employee(employee: EmployeeDTO) -> Employee:
 
 
 def to_personal_info_dto(personal: PersonalInfo) -> PersonalInfoDTO:
-    return PersonalInfoDTO(personal.name, personal.surname)
+    return PersonalInfoDTO(name=personal.name, surname=personal.surname)
 
 
 def to_employment_details_dto(employment: EmploymentDetails) -> EmploymentDetailsDTO:
-    return EmploymentDetailsDTO(employment.fte, employment.utilization_rate)
+    return EmploymentDetailsDTO(
+        fte=employment.fte, utilization_rate=employment.utilization_rate
+    )
 
 
 def to_company_credentials_dto(
     credentials: CompanyCredentials,
 ) -> CompanyCredentialsDTO:
-    return CompanyCredentialsDTO(credentials.username, credentials.acronym)
+    return CompanyCredentialsDTO(
+        username=credentials.username, acronym=credentials.acronym
+    )
 
 
 def to_employee_dto(employee: Employee) -> EmployeeDTO:
     return EmployeeDTO(
-        employee.id,
-        to_personal_info_dto(employee.personal),
-        to_employment_details_dto(employee.employment),
-        to_company_credentials_dto(employee.credentials),
+        id=employee.id,
+        personal=to_personal_info_dto(employee.personal),
+        employment=to_employment_details_dto(employee.employment),
+        credentials=to_company_credentials_dto(employee.credentials),
     )

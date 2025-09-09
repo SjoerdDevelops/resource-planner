@@ -8,80 +8,90 @@ from PySide6.QtWidgets import (
 )
 from ui.contexts import employee_context
 from ui.dto import PersonalInfoDTO, EmploymentDetailsDTO, CompanyCredentialsDTO
+from typing import Final
 
 
 class NewEmployeeForm(QDialog):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.setWindowTitle("Add Employee Form")
 
         layout = QFormLayout()
 
-        self.name_input = QLineEdit()
-        self.surname_input = QLineEdit()
-        self.fte_input = QDoubleSpinBox()
-        self.utilization_rate_input = QDoubleSpinBox()
-        self.username_input = QLineEdit()
-        self.acronym_input = QLineEdit()
-        self.submit_button = QPushButton("Submit")
+        self._name_input: Final[QLineEdit] = QLineEdit()
+        self._surname_input: Final[QLineEdit] = QLineEdit()
+        self._fte_input: Final[QDoubleSpinBox] = QDoubleSpinBox()
+        self._utilization_rate_input: Final[QDoubleSpinBox] = QDoubleSpinBox()
+        self._username_input: Final[QLineEdit] = QLineEdit()
+        self._acronym_input: Final[QLineEdit] = QLineEdit()
 
-        self.fte_input.setValue(1)
-        self.fte_input.setMaximum(1)
-        self.fte_input.setMinimum(0)
-        self.fte_input.setDecimals(2)
-        self.fte_input.setSingleStep(0.05)
+        self._submit_button: Final[QPushButton] = QPushButton("Submit")
 
-        self.utilization_rate_input.setValue(0.8)
-        self.utilization_rate_input.setMaximum(1)
-        self.utilization_rate_input.setMinimum(0)
-        self.utilization_rate_input.setDecimals(2)
-        self.utilization_rate_input.setSingleStep(0.05)
+        self._fte_input.setValue(1)
+        self._fte_input.setMaximum(1)
+        self._fte_input.setMinimum(0)
+        self._fte_input.setDecimals(2)
+        self._fte_input.setSingleStep(0.05)
 
-        self.acronym_input.setMaxLength(3)
+        self._utilization_rate_input.setValue(0.8)
+        self._utilization_rate_input.setMaximum(1)
+        self._utilization_rate_input.setMinimum(0)
+        self._utilization_rate_input.setDecimals(2)
+        self._utilization_rate_input.setSingleStep(0.05)
 
-        layout.addRow("Name:", self.name_input)
-        layout.addRow("Surname:", self.surname_input)
-        layout.addRow("FTE:", self.fte_input)
-        layout.addRow("Utilization Rate:", self.utilization_rate_input)
-        layout.addRow("Username:", self.username_input)
-        layout.addRow("Acronym:", self.acronym_input)
+        self._acronym_input.setMaxLength(3)
 
-        self.buttons = QDialogButtonBox(
+        layout.addRow("Name:", self._name_input)
+        layout.addRow("Surname:", self._surname_input)
+        layout.addRow("FTE:", self._fte_input)
+        layout.addRow("Utilization Rate:", self._utilization_rate_input)
+        layout.addRow("Username:", self._username_input)
+        layout.addRow("Acronym:", self._acronym_input)
+
+        self._buttons: Final[QDialogButtonBox] = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
         )
-        self.buttons.accepted.connect(self.on_accept)
-        self.buttons.rejected.connect(self.on_reject)
+        _ = self._buttons.accepted.connect(self.on_accept)
+        _ = self._buttons.rejected.connect(self.on_reject)
 
-        layout.addRow(self.buttons)
+        layout.addRow(self._buttons)
 
         self.setLayout(layout)
 
-    def on_accept(self):
+    def on_accept(self) -> None:
         print("accepted")
         self.add_employee()
         self.accept()
 
-    def on_reject(self):
+    def on_reject(self) -> None:
         print("rejected")
 
-    def get_data(self):
-        return {
-            "name": self.name_input.text(),
-            "surname": self.surname_input.text(),
-            "fte": self.fte_input.text(),
-            "utilization_rate": self.fte_input.text(),
-            "username": self.username_input.text(),
-            "acronym": self.acronym_input.text(),
-        }
+    def get_data(
+        self,
+    ) -> tuple[PersonalInfoDTO, EmploymentDetailsDTO, CompanyCredentialsDTO]:
+        personal_info = PersonalInfoDTO(
+            name=self._name_input.text(), surname=self._surname_input.text()
+        )
+        employment_details = EmploymentDetailsDTO(
+            fte=self._fte_input.value(),
+            utilization_rate=self._utilization_rate_input.value(),
+        )
+        company_credentials = CompanyCredentialsDTO(
+            username=self._username_input.text(), acronym=self._acronym_input.text()
+        )
+        return personal_info, employment_details, company_credentials
 
-    def add_employee(self):
+    def add_employee(self) -> None:
         employee_context.add_employee_requested.emit(
-            PersonalInfoDTO(self.name_input.text(), self.surname_input.text()),
+            PersonalInfoDTO(
+                name=self._name_input.text(), surname=self._surname_input.text()
+            ),
             EmploymentDetailsDTO(
-                self.fte_input.value(), self.utilization_rate_input.value()
+                fte=self._fte_input.value(),
+                utilization_rate=self._utilization_rate_input.value(),
             ),
             CompanyCredentialsDTO(
-                self.username_input.text(), self.acronym_input.text()
+                username=self._username_input.text(), acronym=self._acronym_input.text()
             ),
         )
