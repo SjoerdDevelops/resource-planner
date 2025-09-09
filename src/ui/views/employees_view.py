@@ -6,12 +6,12 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QPushButton,
 )
-from ui.components import EmployeeTable, NewEmployeeForm
+from ui.components import EmployeeTable, AddEmployeeForm
 
 
 class EmployeesView(QWidget):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
 
         # Table layout
         self.table_layout: QVBoxLayout = QVBoxLayout()
@@ -43,7 +43,7 @@ class EmployeesView(QWidget):
         _ = self.save_button.clicked.connect(self.on_save_clicked)
 
     def on_add_clicked(self) -> None:
-        dialog = NewEmployeeForm()
+        dialog = AddEmployeeForm(self)
 
         if dialog.exec() == QDialog.DialogCode.Accepted:
             self.table_layout.update()
