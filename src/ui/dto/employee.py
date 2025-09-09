@@ -2,7 +2,7 @@ from pydantic import (
     BaseModel,
     UUID4,
     field_validator,
-    ValidatorInfo,
+    ValidationInfo,
 )
 
 
@@ -11,10 +11,10 @@ class PersonalInfoDTO(BaseModel):
     surname: str
 
     @field_validator("name", "surname")
-    def validate_and_normalize_name(cls, value: str, info: "ValidatorInfo") -> str:
+    def validate_and_normalize_name(cls, value: str, info: ValidationInfo) -> str:
         _ = value.strip().title()
 
-        field_name = info.field_name.capitalize()
+        field_name = info.field_name.capitalize() if info.field_name else None
 
         if len(value) < 1:
             raise ValueError(f"{field_name} cannot be empty")
@@ -33,8 +33,8 @@ class EmploymentDetailsDTO(BaseModel):
     utilization_rate: float
 
     @field_validator("fte", "utilization_rate")
-    def validate_employment_details(cls, value: float, info: "ValidatorInfo") -> float:
-        field_name = info.field_name.capitalize()
+    def validate_employment_details(cls, value: float, info: ValidationInfo) -> float:
+        field_name = info.field_name.capitalize() if info.field_name else None
 
         if value < 0 or value > 1:
             raise ValueError(f"{field_name} must be between 0.0 and 1.0")
@@ -47,10 +47,11 @@ class CompanyCredentialsDTO(BaseModel):
     acronym: str
 
     @field_validator("username")
-    def validate_and_normalize_username(cls, value: str, info: "ValidatorInfo") -> str:
+    def validate_and_normalize_username(cls, value: str, info: ValidationInfo) -> str:
         _ = value.strip().lower()
 
-        field_name = info.field_name.capitalize()
+        field_name = info.field_name.capitalize() if info.field_name else None
+
         min_length = 3
         max_length = 20
 
@@ -70,10 +71,11 @@ class CompanyCredentialsDTO(BaseModel):
 
     # Normalize acronym to upper case
     @field_validator("acronym")
-    def validate_and_normalize_acronym(cls, value: str, info: "ValidatorInfo") -> str:
+    def validate_and_normalize_acronym(cls, value: str, info: ValidationInfo) -> str:
         _ = value.strip().upper()
 
-        field_name = info.field_name.capitalize()
+        field_name = info.field_name.capitalize() if info.field_name else None
+
         acronym_length = 3
 
         if len(value) != acronym_length:
