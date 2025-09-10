@@ -5,7 +5,6 @@ from domain.entities import (
     EmploymentDetails,
     CompanyCredentials,
 )
-from ui.contexts import employee_context
 from ui.dto import (
     EmployeeDTO,
     PersonalInfoDTO,
@@ -13,48 +12,41 @@ from ui.dto import (
     CompanyCredentialsDTO,
 )
 from uuid import UUID
+from PySide6.QtCore import QObject
 
 
-class EmployeeController:
+class EmployeeController(QObject):
     def __init__(self, employee_service: EmployeeService) -> None:
+        super().__init__()
         self._employee_service: EmployeeService = employee_service
-        self.update_context()
 
-        _ = employee_context.add_employee_requested.connect(
-            self.on_add_employee_requested
-        )
-        _ = employee_context.remove_employee_requested.connect(
-            self.on_remove_employee_requested
-        )
-
-    def on_add_employee_requested(
+    def add_employee(
         self,
         personal_dto: PersonalInfoDTO,
         employment_dto: EmploymentDetailsDTO,
         credentials_dto: CompanyCredentialsDTO,
     ) -> None:
-        try:
-            employee: Employee = self._employee_service.add(
-                to_personal_info(personal_dto),
-                to_employment_details(employment_dto),
-                to_company_credentials(credentials_dto),
-            )
-            employee_context.add_employee(to_employee_dto(employee))
+        _ = self._employee_service.add(
+            to_personal_info(personal_dto),
+            to_employment_details(employment_dto),
+            to_company_credentials(credentials_dto),
+        )
 
-        except Exception as e:
-            employee_context.error_occured.emit(e)
+    def remove_employee(self, id: UUID) -> None:
+        self._employee_service.remove(id)
 
-    def on_remove_employee_requested(self, id: UUID) -> None:
-        try:
-            self._employee_service.remove(id)
-            employee_context.remove_employee(id)
-        except Exception as e:
-            employee_context.error_occured.emit(e)
-
-    def update_context(self) -> None:
+    def list_employees(self) -> list[EmployeeDTO]:
         employees = self._employee_service.list_all()
         employees_dto = [to_employee_dto(employee) for employee in employees]
-        employee_context.reset(employees_dto)
+        return employees_dto
+
+
+class EmployeeControllerFactory:
+    def __init__(self, employee_service: EmployeeService) -> None:
+        self._employee_service: EmployeeService = employee_service
+
+    def create(self) -> EmployeeController:
+        return EmployeeController(self._employee_service)
 
 
 def to_personal_info(personal: PersonalInfoDTO) -> PersonalInfo:

@@ -1,4 +1,5 @@
 from PySide6.QtWidgets import (
+    QApplication,
     QDialogButtonBox,
     QFormLayout,
     QLineEdit,
@@ -7,7 +8,6 @@ from PySide6.QtWidgets import (
     QDialog,
     QWidget,
 )
-from ui.contexts import employee_context
 from ui.dto import PersonalInfoDTO, EmploymentDetailsDTO, CompanyCredentialsDTO
 from typing import Final
 from .error_dialog import ErrorDialog
@@ -61,6 +61,9 @@ class AddEmployeeForm(QDialog):
         layout.addRow(self._buttons)
 
         self.setLayout(layout)
+        
+        app = QApplication.instance()
+        self.employee_controller = 
 
     def get_data(
         self,

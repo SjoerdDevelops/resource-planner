@@ -1,3 +1,3 @@
-from .employee_controller import EmployeeController
+from .employee_controller import EmployeeController, EmployeeControllerFactory
 
-__all__ = ["EmployeeController"]
+__all__ = ["EmployeeController", "EmployeeControllerFactory"]
